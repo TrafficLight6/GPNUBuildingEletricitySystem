@@ -2,8 +2,8 @@
   <div class="login-container">
     <el-card class="login-card" shadow="always">
       <div class="login-header">
-        <h2 class="login-title">GPNU 建筑电力系统</h2>
-        <p class="login-subtitle">Building Electricity System</p>
+        <h2 class="login-title">GPNU 公寓电力系统</h2>
+        <p class="login-subtitle">Apartment Electricity System</p>
       </div>
 
       <el-form
@@ -54,8 +54,8 @@
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue'
-import { ElMessage } from 'element-plus'
+import { ref, reactive, onMounted, h } from 'vue'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import { User, Lock } from '@element-plus/icons-vue'
 
 const formRef = ref()
@@ -86,6 +86,21 @@ const handleLogin = () => {
     }, 800)
   })
 }
+
+onMounted(() => {
+  ElMessageBox.alert(
+    h('p', { style: 'line-height: 1.6' }, [
+      '这是一个纯前端项目，仅用于界面演示，',
+      h('strong', '不会改变和管理任何数据'),
+      '。',
+    ]),
+    '提示',
+    {
+      confirmButtonText: '我知道了',
+      type: 'warning',
+    }
+  )
+})
 </script>
 
 <style scoped>
