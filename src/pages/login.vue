@@ -6,31 +6,14 @@
         <p class="login-subtitle">Apartment Electricity System</p>
       </div>
 
-      <el-form
-        ref="formRef"
-        :model="form"
-        :rules="rules"
-        size="large"
-        @submit.prevent="handleLogin"
-      >
+      <el-form ref="formRef" :model="form" :rules="rules" size="large" @submit.prevent="handleLogin">
         <el-form-item prop="username">
-          <el-input
-            v-model="form.username"
-            placeholder="请输入用户名"
-            :prefix-icon="User"
-            clearable
-          />
+          <el-input v-model="form.username" placeholder="请输入用户名" :prefix-icon="User" clearable />
         </el-form-item>
 
         <el-form-item prop="password">
-          <el-input
-            v-model="form.password"
-            type="password"
-            placeholder="请输入密码"
-            :prefix-icon="Lock"
-            show-password
-            @keyup.enter="handleLogin"
-          />
+          <el-input v-model="form.password" type="password" placeholder="请输入密码" :prefix-icon="Lock" show-password
+            @keyup.enter="handleLogin" />
         </el-form-item>
 
         <div class="login-options">
@@ -39,12 +22,7 @@
         </div>
 
         <el-form-item>
-          <el-button
-            type="primary"
-            class="login-btn"
-            :loading="loading"
-            @click="handleLogin"
-          >
+          <el-button type="primary" class="login-btn" :loading="loading" @click="handleLogin">
             登 录
           </el-button>
         </el-form-item>
@@ -57,7 +35,9 @@
 import { ref, reactive, onMounted, h } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { User, Lock } from '@element-plus/icons-vue'
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 const formRef = ref()
 const loading = ref(false)
 const remember = ref(false)
@@ -83,7 +63,8 @@ const handleLogin = () => {
     setTimeout(() => {
       loading.value = false
       ElMessage.success('登录成功')
-    }, 800)
+    })
+    router.push({ name: 'bar' })
   })
 }
 
@@ -93,6 +74,7 @@ onMounted(() => {
       '这是一个纯前端项目，仅用于界面演示，',
       h('strong', '不会改变和管理任何数据'),
       '。',
+      '用户和密码（6位以上）随便输入都可以登录',
     ]),
     '提示',
     {
