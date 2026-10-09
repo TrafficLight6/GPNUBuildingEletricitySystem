@@ -1,0 +1,69 @@
+# 构建静态页面并发布到 GitHub Pages
+#
+# 与仓库现有配置配套：
+#   - vite.config.js 中 base: './'          → 产物用相对路径，可直接部署到项目页子路径
+#   - vue-router 使用 hash 模式             → 刷新子页面不会 404，无需服务端重写规则
+# 因此本工作流无需注入 base_path，产物拷到 Pages 即可运行。
+#
+# 首次使用前请在仓库中开启 Pages：
+#   Settings → Pages → Build and deployment → Source 选择 "GitHub Actions"
+# （不要选 "Deploy from a branch"。GITHUB_TOKEN 无权自动开启 Pages，
+#   所以这里没有使用 configure-pages 的 enablement 选项。）
+
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  # 允许在 Actions 标签页手动触发
+  workflow_dispatch:
+
+# GITHUB_TOKEN 的最小权限：读取仓库、写入 Pages、用 OIDC 换取部署令牌
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 同一时间只跑一个发布任务；不打断正在进行中的发布
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v7
+
+      - name: 安装 Node.js
+        uses: actions/setup-node@v7
+        with:
+          # Vite 8 要求 ^20.19.0 || >=22.12.0
+          node-version: 24
+          cache: npm
+
+      - name: 安装依赖
+        run: npm ci
+
+      - name: 构建静态页面
+        run: npm run build
+
+      - name: 配置 Pages
+        uses: actions/configure-pages@v6
+
+      - name: 上传构建产物
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: 发布到 GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5
