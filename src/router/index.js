@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHashHistory } from 'vue-router'
 import Login from '../pages/login.vue'
 import Bar from '../pages/main/bar.vue'
 import Home from '../pages/main/home.vue'
@@ -46,7 +46,8 @@ const routes = [
 ]
 
 const router = createRouter({
-  history: createWebHistory(),
+  // hash 模式：纯静态托管无需服务器重写规则，刷新子页面不会 404
+  history: createWebHashHistory(),
   routes,
 })
 
